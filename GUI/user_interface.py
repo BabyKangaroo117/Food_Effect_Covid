@@ -8,13 +8,14 @@ with open('../Train_Model/model.pkl', 'rb') as file:
     loaded_model = pickle.load(file)
 
 # Create a list to store the values from sliders
-values = [0] * 26
+values = [0] * 23
 
 def update_value(slider_value, index):
     rounded_value = "{:.4f}".format(float(slider_value)) # Round the slider value to 4 decimal places
     values[index] = rounded_value
     value_boxes[index].config(text=rounded_value)  # Update the value in the corresponding box
     prediction = make_prediction()
+    rounded_value = "{:.8f}".format(float(prediction))
     prediction_box.config(text=f"{prediction}")
 
 
@@ -28,13 +29,12 @@ def make_prediction():
 
 
 # Includes the max percentage of each category
-features = {'Alcoholic Beverages': 0.10, 'Animal Products': 40, 'Animal fats': 15,
-        'Aquatic Products, Other': 0.06, 'Cereals - Excluding Beer': 20, 'Eggs': 4,
-        'Fish, Seafood': 9, 'Fruits - Excluding Wine':10, 'Meat': 27, 'Miscellaneous': 0.50,
-        'Milk - Excluding Butter': 18, 'Offals': 0.80, 'Oilcrops': 29, 'Pulses': 3, 'Spices': 3,
-        'Starchy Roots': 3, 'Stimulants': 4, 'Sugar Crops': 0.20, 'Sugar & Sweeteners': 0.90,
-        'Treenuts': 5, 'Vegetal Products': 45, 'Vegetable Oils': 37, 'Vegetables': 2,
-        'Obesity': 46, 'Undernourished': 60, 'Active': 10}
+features = {'Alcoholic Beverages': 15.0, 'Animal fats': 1.0, 'Animal Products': 27.0, 
+            'Cereals - Excluding Beer': 30.0, 'Eggs': 2.0, 'Fish, Seafood': 9.0, 
+            'Fruits - Excluding Wine': 19.0, 'Meat': 8.0, 'Milk - Excluding Butter': 21.0, 
+            'Offals': 1.0, 'Oilcrops': 12.0, 'Pulses': 3.0, 'Spices': 1.0, 'Starchy Roots': 28.0, 
+            'Stimulants': 1.0, 'Sugar & Sweeteners': 10.0, 'Treenuts': 1.0, 'Vegetable Oils': 2.0, 
+            'Vegetables': 19.0, 'Vegetal Products': 48.0, 'Obesity': 46.0, 'Undernourished': 60.0, 'Active': 8.0}
 
 # Create the Tkinter application window
 root = tk.Tk()
@@ -55,7 +55,7 @@ prediction_box = ttk.Label(frame, text="0.0000")
 prediction_box.grid(row=6, column=3 * 3 + 2, padx=50, pady=5)
 
 # Create 30 sliders and add them to the frame
-for i in range(26):
+for i in range(23):
     value_box = ttk.Label(frame, text="0.0000")
     value_box.grid(row=i % 13, column=(i // 13) * 3 + 2, padx=50, pady=5)
     value_boxes.append(value_box)
