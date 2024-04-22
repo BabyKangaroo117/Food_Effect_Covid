@@ -8,24 +8,31 @@ with open('../Train_Model/model.pkl', 'rb') as file:
     loaded_model = pickle.load(file)
 
 # Create a list to store the values from sliders
-values = [0] * 23
+values = [0] * 20
 
 def update_value(slider_value, index):
     rounded_value = "{:.4f}".format(float(slider_value)) # Round the slider value to 4 decimal places
     values[index] = rounded_value
     value_boxes[index].config(text=rounded_value)  # Update the value in the corresponding box
+    
+    # Total percentage
+    total = 0
+    for value in values:
+        total += float(value)
+    rounded_value = "{:.4f}".format(float(total))
+    percentage_box.config(text=f"{rounded_value}")
+
+    # Prediction
     prediction = make_prediction()
     rounded_value = "{:.8f}".format(float(prediction))
-    prediction_box.config(text=f"{prediction}")
+    prediction_box.config(text=f"{rounded_value}")
 
 
 def make_prediction():
     # Make prediction
     data = pd.DataFrame([values], columns=list(features.keys()))
     prediction = loaded_model.predict(data)
-    print(prediction)
     return prediction
-
 
 
 # Includes the max percentage of each category
@@ -34,7 +41,7 @@ features = {'Alcoholic Beverages': 15.0, 'Animal fats': 1.0, 'Animal Products': 
             'Fruits - Excluding Wine': 19.0, 'Meat': 8.0, 'Milk - Excluding Butter': 21.0, 
             'Offals': 1.0, 'Oilcrops': 12.0, 'Pulses': 3.0, 'Spices': 1.0, 'Starchy Roots': 28.0, 
             'Stimulants': 1.0, 'Sugar & Sweeteners': 10.0, 'Treenuts': 1.0, 'Vegetable Oils': 2.0, 
-            'Vegetables': 19.0, 'Vegetal Products': 48.0, 'Obesity': 46.0, 'Undernourished': 60.0, 'Active': 8.0}
+            'Vegetables': 19.0, 'Vegetal Products': 48.0}
 
 # Create the Tkinter application window
 root = tk.Tk()
@@ -50,22 +57,28 @@ value_boxes = []
 
 # Prediction label
 prediction_label = ttk.Label(frame, text=f"Prediction: ")
-prediction_label.grid(row=6, column=3 * 3, padx=5, pady=5, sticky="w")
-prediction_box = ttk.Label(frame, text="0.0000")
-prediction_box.grid(row=6, column=3 * 3 + 2, padx=50, pady=5)
+prediction_label.grid(row=5, column=3 * 3, padx=5, pady=5, sticky="w")
+prediction_box = ttk.Label(frame, text="0.00000000")
+prediction_box.grid(row=5, column=3 * 3 + 2, padx=50, pady=5)
+
+# Total Percentage of foods
+percentage_label = ttk.Label(frame, text=f"Total Percentage: ")
+percentage_label.grid(row=4, column=3 * 3, padx=5, pady=5, sticky="w")
+percentage_box = ttk.Label(frame, text="0.0000")
+percentage_box.grid(row=4, column=3 * 3 + 2, padx=50, pady=5)
 
 # Create 30 sliders and add them to the frame
-for i in range(23):
+for i in range(20):
     value_box = ttk.Label(frame, text="0.0000")
-    value_box.grid(row=i % 13, column=(i // 13) * 3 + 2, padx=50, pady=5)
+    value_box.grid(row=i % 10, column=(i // 10) * 3 + 2, padx=50, pady=5)
     value_boxes.append(value_box)
 
     slider_label = ttk.Label(frame, text=f"{list(features.keys())[i]}")
-    slider_label.grid(row=i % 13, column=(i // 13) * 3, padx=5, pady=5, sticky="w")
+    slider_label.grid(row=i % 10, column=(i // 10) * 3, padx=5, pady=5, sticky="w")
 
     slider = ttk.Scale(frame, from_=0, to=list(features.values())[i], length=200, orient="horizontal", command=lambda value, i=i: update_value(value, i))
     slider.set(float(0.0000))
-    slider.grid(row=i % 13, column=(i // 13) * 3 + 1, padx=5, pady=5)
+    slider.grid(row=i % 10, column=(i // 10) * 3 + 1, padx=5, pady=5)
     sliders.append(slider)
 
     # Adjust the layout to ensure proper spacing
