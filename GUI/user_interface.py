@@ -56,14 +56,14 @@ sliders = []
 value_boxes = []
 
 # Prediction label
-prediction_label = ttk.Label(frame, text=f"Prediction: ")
-prediction_label.grid(row=5, column=3 * 3, padx=5, pady=5, sticky="w")
+prediction_label = ttk.Label(frame, text=f"Percentage Confirmed Covid: ")
+prediction_label.grid(row=5, column=3 * 3, padx=2, pady=5, sticky="w")
 prediction_box = ttk.Label(frame, text="0.00000000")
 prediction_box.grid(row=5, column=3 * 3 + 2, padx=50, pady=5)
 
 # Total Percentage of foods
-percentage_label = ttk.Label(frame, text=f"Total Percentage: ")
-percentage_label.grid(row=4, column=3 * 3, padx=5, pady=5, sticky="w")
+percentage_label = ttk.Label(frame, text=f"Total Percentage Food: ")
+percentage_label.grid(row=4, column=3 * 3, padx=2, pady=5, sticky="w")
 percentage_box = ttk.Label(frame, text="0.0000")
 percentage_box.grid(row=4, column=3 * 3 + 2, padx=50, pady=5)
 
