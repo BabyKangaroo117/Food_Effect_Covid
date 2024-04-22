@@ -24,7 +24,7 @@ def update_value(slider_value, index):
 
     # Prediction
     prediction = make_prediction()
-    rounded_value = "{:.8f}".format(float(prediction))
+    rounded_value = "{:.7f}".format(float(prediction[0]))
     prediction_box.config(text=f"{rounded_value}")
 
 
