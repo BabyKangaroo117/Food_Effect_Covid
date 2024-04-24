@@ -1,18 +1,29 @@
 import tkinter as tk
 from tkinter import ttk
-from sklearn.svm import SVR
+import xgboost as xgb
 import pickle
 import pandas as pd
 
 with open('../Train_Model/model.pkl', 'rb') as file:
-    loaded_model = pickle.load(file)
+    loaded_model: xgb = pickle.load(file)
 
 # Create a list to store the values from sliders
 values = [0] * 20
+update_counter = 0
+# Includes the max percentage of each category
+features = {'Alcoholic Beverages': 15.0, 'Animal fats': 1.0, 'Animal Products': 27.0, 
+            'Cereals - Excluding Beer': 30.0, 'Eggs': 2.0, 'Fish, Seafood': 9.0, 
+            'Fruits - Excluding Wine': 19.0, 'Meat': 8.0, 'Milk - Excluding Butter': 21.0, 
+            'Offals': 1.0, 'Oilcrops': 12.0, 'Pulses': 3.0, 'Spices': 1.0, 'Starchy Roots': 28.0, 
+            'Stimulants': 1.0, 'Sugar & Sweeteners': 10.0, 'Treenuts': 1.0, 'Vegetable Oils': 2.0, 
+            'Vegetables': 19.0, 'Vegetal Products': 48.0}
+
 
 def update_value(slider_value, index):
+    global update_counter
+    update_counter += 1
     rounded_value = "{:.4f}".format(float(slider_value)) # Round the slider value to 4 decimal places
-    values[index] = rounded_value
+    values[index] = float(rounded_value)
     value_boxes[index].config(text=rounded_value)  # Update the value in the corresponding box
     
     # Total percentage
@@ -22,10 +33,13 @@ def update_value(slider_value, index):
     rounded_value = "{:.4f}".format(float(total))
     percentage_box.config(text=f"{rounded_value}")
 
-    # Prediction
-    prediction = make_prediction()
-    rounded_value = "{:.7f}".format(float(prediction[0]))
-    prediction_box.config(text=f"{rounded_value}")
+    # Limit number of times data is run through model for stability of program
+    if update_counter % 10 == 0:
+        update_counter = 0
+        # Prediction
+        prediction = make_prediction()
+        rounded_value = "{:.7f}".format(float(prediction[0]))
+        prediction_box.config(text=f"{rounded_value}")
 
 
 def make_prediction():
@@ -33,15 +47,6 @@ def make_prediction():
     data = pd.DataFrame([values], columns=list(features.keys()))
     prediction = loaded_model.predict(data)
     return prediction
-
-
-# Includes the max percentage of each category
-features = {'Alcoholic Beverages': 15.0, 'Animal fats': 1.0, 'Animal Products': 27.0, 
-            'Cereals - Excluding Beer': 30.0, 'Eggs': 2.0, 'Fish, Seafood': 9.0, 
-            'Fruits - Excluding Wine': 19.0, 'Meat': 8.0, 'Milk - Excluding Butter': 21.0, 
-            'Offals': 1.0, 'Oilcrops': 12.0, 'Pulses': 3.0, 'Spices': 1.0, 'Starchy Roots': 28.0, 
-            'Stimulants': 1.0, 'Sugar & Sweeteners': 10.0, 'Treenuts': 1.0, 'Vegetable Oils': 2.0, 
-            'Vegetables': 19.0, 'Vegetal Products': 48.0}
 
 # Create the Tkinter application window
 root = tk.Tk()
